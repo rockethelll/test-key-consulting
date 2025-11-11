@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { describe, beforeEach, it, expect } from 'vitest';
 import { App } from './app';
 
 describe('App', () => {
@@ -18,6 +19,8 @@ describe('App', () => {
     const fixture = TestBed.createComponent(App);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, test-key-consulting');
+    expect(compiled.querySelector('h1')?.textContent).toContain(
+      'Test Key Consulting by Alec Rémond'
+    );
   });
 });
