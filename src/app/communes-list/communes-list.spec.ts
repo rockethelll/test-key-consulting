@@ -1,23 +1,10 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { render } from '@testing-library/angular';
+import { describe, expect, it } from 'vitest';
 import { CommunesList } from './communes-list';
 
 describe('CommunesList', () => {
-  let component: CommunesList;
-  let fixture: ComponentFixture<CommunesList>;
-
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [CommunesList]
-    })
-    .compileComponents();
-
-    fixture = TestBed.createComponent(CommunesList);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
-
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  it('should render the communes list', async () => {
+    await render(CommunesList);
+    expect(CommunesList).toBeTruthy();
   });
 });
