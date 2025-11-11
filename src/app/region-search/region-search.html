@@ -1,1 +1,4 @@
-<p>region-search-component works!</p>
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <input type="text" formControlName="nom" placeholder="Nom de la région" />
+  <button type="submit">Rechercher</button>
+</form>

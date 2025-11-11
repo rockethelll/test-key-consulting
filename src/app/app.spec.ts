@@ -1,26 +1,19 @@
-import { TestBed } from '@angular/core/testing';
-import { describe, beforeEach, it, expect } from 'vitest';
+import { render, screen } from '@testing-library/angular';
+import { describe, expect, it } from 'vitest';
 import { App } from './app';
 
 describe('App', () => {
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [App],
-    }).compileComponents();
+  it('should render the app', async () => {
+    await render(App);
+    expect(App).toBeTruthy();
   });
 
-  it('should create the app', () => {
-    const fixture = TestBed.createComponent(App);
-    const app = fixture.componentInstance;
-    expect(app).toBeTruthy();
-  });
-
-  it('should render title', () => {
-    const fixture = TestBed.createComponent(App);
-    fixture.detectChanges();
-    const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain(
-      'Test Key Consulting by Alec Rémond'
-    );
+  it('should render title', async () => {
+    await render(App);
+    expect(
+      screen.getByRole('heading', {
+        name: 'Bienvenue sur le site de recherche de communes',
+      })
+    ).toBeInTheDocument();
   });
 });
