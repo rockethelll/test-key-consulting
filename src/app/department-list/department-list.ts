@@ -6,11 +6,11 @@ import {
   Department,
   SearchDepartment,
 } from '../GeoApiService/departmentService/search-department';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-department-list',
-  standalone: true,
-  imports: [],
+  imports: [RouterLink],
   templateUrl: './department-list.html',
 })
 export class DepartmentList implements OnInit {

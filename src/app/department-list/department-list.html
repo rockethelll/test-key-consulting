@@ -1,13 +1,23 @@
 <div class="p-4 border-2 border-blue-500 bg-blue-100">
-  <h2 class="text-2xl font-bold">Liste des départements </h2>
-  <button (click)="goHome()" class="bg-blue-500 text-white px-4 py-2 rounded-md">Retour à la page d'accueil</button>
-  @if (departments().length > 0) {  
+  <h2 class="text-2xl font-bold">Liste des départements</h2>
+  <button
+    (click)="goHome()"
+    class="bg-blue-500 text-white px-4 py-2 rounded-md"
+  >
+    Retour à la page d'accueil
+  </button>
+
+  <!-- Show the departments found -->
+  @if (departments().length > 0) {
   <ul>
     @for (department of departments(); track department.code) {
-    <li>{{ department.nom }}</li>
+    <li>
+      <a [routerLink]="['/department', department.code]" class="text-blue-500 hover:text-blue-700 hover:underline hover:cursor-pointer">{{ department.nom }}</a>
+    </li>
     }
   </ul>
   } @else {
+  <!-- Show a message when no department is found -->
   <p>Aucun département trouvé pour la région {{ codeRegion() }}</p>
   }
 </div>

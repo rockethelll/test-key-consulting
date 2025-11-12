@@ -4,7 +4,6 @@ import { RegionSearch } from './region-search/region-search';
 
 @Component({
   selector: 'app-root',
-  standalone: true,
   imports: [RouterOutlet, RegionSearch],
   templateUrl: './app.html',
   styleUrl: './app.css',

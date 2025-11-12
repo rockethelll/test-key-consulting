@@ -6,7 +6,6 @@ import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-region-search',
-  standalone: true,
   imports: [],
   templateUrl: './region-search.html',
 })
