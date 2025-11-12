@@ -1,7 +1,8 @@
 import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { catchError, debounceTime, of, switchMap } from 'rxjs';
-import { Region, SearchRegion } from '../GeoApiService/region/search-region';
+import { Region, SearchRegion } from '../GeoApiService/regionService/search-region';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-region-search',
@@ -10,6 +11,7 @@ import { Region, SearchRegion } from '../GeoApiService/region/search-region';
   templateUrl: './region-search.html',
 })
 export class RegionSearch {
+  router = inject(Router);
   searchRegionsService = inject(SearchRegion);
   private destroyRef = inject(DestroyRef);
   // Display value in the input (can be set without triggering search)
@@ -66,6 +68,7 @@ export class RegionSearch {
     this.showDropdown.set(false);
     this.regions.set([]);
     // Don't update searchTerm to avoid triggering a new search
+    this.router.navigate(['/region', region.code]);
   }
 
   // Show the dropdown when the input is focused

@@ -1,4 +1,13 @@
 <div class="p-4 border-2 border-blue-500 bg-blue-100">
-  <h2 class="text-2xl font-bold">Liste des départements</h2>
-  <p>department-list works!</p>
+  <h2 class="text-2xl font-bold">Liste des départements </h2>
+  <button (click)="goHome()" class="bg-blue-500 text-white px-4 py-2 rounded-md">Retour à la page d'accueil</button>
+  @if (departments().length > 0) {  
+  <ul>
+    @for (department of departments(); track department.code) {
+    <li>{{ department.nom }}</li>
+    }
+  </ul>
+  } @else {
+  <p>Aucun département trouvé pour la région {{ codeRegion() }}</p>
+  }
 </div>
