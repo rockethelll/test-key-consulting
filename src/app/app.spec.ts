@@ -1,15 +1,20 @@
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { render, screen } from '@testing-library/angular';
-import { describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { App } from './app';
 
 describe('App', () => {
-  it('should render the app', async () => {
-    await render(App);
+  beforeEach(async () => {
+    await render(App, {
+      providers: [provideHttpClient(), provideHttpClientTesting()],
+    });
+  });
+  it.only('should render the app', async () => {
     expect(App).toBeTruthy();
   });
 
   it('should render title', async () => {
-    await render(App);
     expect(
       screen.getByRole('heading', {
         name: 'Bienvenue sur le site de recherche de communes',

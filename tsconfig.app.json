@@ -6,6 +6,10 @@
     "outDir": "./out-tsc/app",
     "types": []
   },
-  "include": ["src/**/*.ts", "src/app/app.spec.ts.old"],
+  "include": [
+    "src/**/*.ts",
+    "src/app/app.spec.ts.old",
+    "src/app/GeoApiService/regionService/search-region.spec.ts"
+  ],
   "exclude": ["src/**/*.spec.ts"]
 }
