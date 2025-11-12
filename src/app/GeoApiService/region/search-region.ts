@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { environment } from '../../environments/environment';
+import { environment } from '../../../environments/environment';
 
 export type Region = {
   nom: string;
@@ -11,10 +11,10 @@ export type Region = {
 @Injectable({
   providedIn: 'root',
 })
-export class SearchRegions {
+export class SearchRegion {
   http = inject(HttpClient);
 
-  searchRegions(regionName: string) {
+  searchRegion(regionName: string) {
     return this.http.get<Region[]>(environment.regionsUrl(regionName));
   }
 }
