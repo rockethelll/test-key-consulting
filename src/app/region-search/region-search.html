@@ -3,12 +3,9 @@
     <input
       type="text"
       placeholder="Nom de la région"
-      ngModel
-      name="search"
-      [ngModel]="search()"
-      (ngModelChange)="handleSearch($event)"
+      [value]="displayValue()"
+      (input)="handleSearch($any($event.target).value)"
       (focus)="onInputFocus()"
-      (blur)="onInputBlur()"
       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
     />
   </form>
@@ -20,7 +17,7 @@
     <!-- Show a loading message when the search is in progress -->
     @if (isLoading()) {
     <div class="px-4 py-2 text-gray-500">Recherche en cours...</div>
-    } @else if (regions().length === 0 && search().trim().length > 0) {
+    } @else if (regions().length === 0 && displayValue().trim().length > 0) {
 
     <!-- Show a message when no region is found -->
     <div class="px-4 py-2 text-gray-500">Aucune région trouvée</div>
@@ -30,7 +27,7 @@
     region.code) {
     <button
       type="button"
-      (click)="selectRegion(region)"
+      (click)="selectRegion(region, $event)"
       class="w-full text-left px-4 py-2 hover:bg-blue-50 focus:bg-blue-50 focus:outline-none transition-colors"
     >
       <div class="font-medium">{{ region.nom }}</div>

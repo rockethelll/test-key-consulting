@@ -1,28 +1,28 @@
 import { Component, DestroyRef, inject, signal } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { FormsModule } from '@angular/forms';
-import { Subject, catchError, debounceTime, of, switchMap } from 'rxjs';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
+import { catchError, debounceTime, of, switchMap } from 'rxjs';
 import { Region, SearchRegions } from '../GeoApiService/search-regions';
 
 @Component({
   selector: 'app-region-search',
-  imports: [FormsModule],
+  imports: [],
   templateUrl: './region-search.html',
 })
 export class RegionSearch {
   searchRegionsService = inject(SearchRegions);
   private destroyRef = inject(DestroyRef);
-  search = signal('');
+  // Display value in the input (can be set without triggering search)
+  displayValue = signal('');
+  // Internal search term for API calls
+  private searchTerm = signal('');
   regions = signal<Region[]>([]);
   selectedRegion = signal<Region | null>(null);
   showDropdown = signal(false);
   isLoading = signal(false);
 
-  private searchSubject = new Subject<string>();
-
-  // Initialization of the subscription with debounce and switchMap
+  // Convert the search term signal to an Observable and apply debounce + switchMap
   // takeUntilDestroyed handles automatically the cleanup
-  private _ = this.searchSubject
+  private _ = toObservable(this.searchTerm)
     .pipe(
       debounceTime(300),
       switchMap((term) => {
@@ -49,16 +49,22 @@ export class RegionSearch {
 
   // Handle the search input and set the search to the input value
   handleSearch(search: string) {
-    this.search.set(search.trim().toLowerCase());
-    this.searchSubject.next(search.trim().toLowerCase());
+    const trimmed = search.trim().toLowerCase();
+    this.displayValue.set(search.trim());
+    this.searchTerm.set(trimmed);
   }
 
   // Handle the selection of a region and set the search to the region name
-  selectRegion(region: Region) {
+  selectRegion(region: Region, event?: Event) {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
     this.selectedRegion.set(region);
-    this.search.set(region.nom);
+    this.displayValue.set(region.nom);
     this.showDropdown.set(false);
     this.regions.set([]);
+    // Don't update searchTerm to avoid triggering a new search
   }
 
   // Show the dropdown when the input is focused
@@ -66,13 +72,5 @@ export class RegionSearch {
     if (this.regions().length > 0) {
       this.showDropdown.set(true);
     }
-  }
-
-  // Hide the dropdown when the input is blurred
-  onInputBlur() {
-    // Delay to allow clicking on an element of the dropdown
-    setTimeout(() => {
-      this.showDropdown.set(false);
-    }, 1000);
   }
 }
