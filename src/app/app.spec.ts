@@ -10,7 +10,7 @@ describe('App', () => {
       providers: [provideHttpClient(), provideHttpClientTesting()],
     });
   });
-  it.only('should render the app', async () => {
+  it('should render the app', async () => {
     expect(App).toBeTruthy();
   });
 
