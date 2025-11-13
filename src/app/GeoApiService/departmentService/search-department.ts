@@ -14,6 +14,7 @@ export type Department = {
 export class SearchDepartment {
   http = inject(HttpClient);
 
+  // Get the departments for the given region
   searchDepartment(codeRegion: string) {
     return this.http.get<Department[]>(environment.departementsUrl(codeRegion));
   }

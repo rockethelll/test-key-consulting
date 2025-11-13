@@ -26,6 +26,7 @@ export class DepartmentList implements OnInit {
     });
   }
 
+  // Get the departments for the given region
   private _ = toObservable(this.codeRegion)
     .pipe(
       switchMap((codeRegion) =>
@@ -37,6 +38,7 @@ export class DepartmentList implements OnInit {
       this.departments.set(departments);
     });
 
+  // Go to the home page
   goHome() {
     this.router.navigate(['/']);
   }

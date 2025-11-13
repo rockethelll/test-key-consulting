@@ -104,7 +104,7 @@ export class RegionSearch implements OnInit {
           const codeDepartment = departmentMatch[1];
           const codeRegion = this.selectedRegion()!.code;
 
-          // Récupérer les départements de la région et trouver celui correspondant
+          // Get the departments for the given region and find the corresponding department
           this.searchDepartmentService
             .searchDepartment(codeRegion)
             .pipe(takeUntilDestroyed(this.destroyRef))

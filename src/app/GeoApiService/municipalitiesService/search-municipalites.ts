@@ -19,6 +19,7 @@ export type Municipalites = {
 export class SearchMunicipalites {
   http = inject(HttpClient);
 
+  // Get the municipalities for the given department
   searchMunicipalites(codeDepartment: string) {
     return this.http.get<Municipalites[]>(environment.municipalitesUrl(codeDepartment));
   }
