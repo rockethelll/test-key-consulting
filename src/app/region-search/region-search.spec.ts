@@ -43,6 +43,14 @@ describe('RegionSearchComponent', () => {
   });
 
   afterEach(() => {
+    // Flush any pending requests before verifying
+    httpMock
+      .match(() => true)
+      .forEach((req) => {
+        if (!req.cancelled) {
+          req.flush([]);
+        }
+      });
     httpMock.verify();
     TestBed.resetTestingModule();
   });
@@ -133,6 +141,10 @@ describe('RegionSearchComponent', () => {
 
   it('should select a region and display it', async () => {
     const mockRegions: Region[] = [{ nom: 'Bretagne', code: '53', _score: 1 }];
+    const mockDepartments = [
+      { nom: 'Finistère', code: '29', _score: 1 },
+      { nom: "Côtes-d'Armor", code: '22', _score: 1 },
+    ];
 
     const input = screen.getByPlaceholderText(
       'Rechercher une région...'
@@ -159,6 +171,15 @@ describe('RegionSearchComponent', () => {
     if (regionButton) {
       fireEvent.click(regionButton);
     }
+
+    // Wait for departments request and flush it
+    await waitFor(
+      () => {
+        const deptReq = httpMock.expectOne(environment.departementsUrl('53'));
+        deptReq.flush(mockDepartments);
+      },
+      { timeout: 500 }
+    );
 
     // Check that the selected region is displayed
     await waitFor(() => {

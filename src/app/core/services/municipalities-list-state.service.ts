@@ -215,6 +215,21 @@ export class MunicipalitiesListStateService {
   }
 
   private scrollToTop(): void {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    // Scroll to the table container instead of the very top of the page
+    // Find the table element and scroll to it with a small offset
+    const tableElement = document.querySelector('table');
+    if (tableElement) {
+      const tableTop =
+        tableElement.getBoundingClientRect().top + window.pageYOffset;
+      // Scroll to table with a small offset (100px from top) for better UX
+      const offset = 100;
+      window.scrollTo({
+        top: Math.max(0, tableTop - offset),
+        behavior: 'smooth',
+      });
+    } else {
+      // Fallback: scroll to top if table not found
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   }
 }

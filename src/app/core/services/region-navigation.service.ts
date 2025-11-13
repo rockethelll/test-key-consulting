@@ -22,6 +22,10 @@ export class RegionNavigationService {
     this.router.navigate(['/region', region.code]);
   }
 
+  navigateToDepartment(department: Department): void {
+    this.router.navigate(['/department', department.code]);
+  }
+
   handleRouteChange(selectedRegion: Region | null): void {
     const url = this.router.url;
     const departmentMatch = url.match(/\/department\/([^\/]+)/);

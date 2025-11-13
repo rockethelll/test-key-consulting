@@ -1,8 +1,10 @@
 import { DestroyRef, inject, Injectable, signal } from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { catchError, debounceTime, of, switchMap } from 'rxjs';
+import { SearchDepartment } from '../../GeoApiService/departmentService/search-department';
 import { SearchRegion } from '../../GeoApiService/regionService/search-region';
 import { SEARCH_DEBOUNCE_TIME } from '../constants/app.constants';
+import { Department } from '../models/department.model';
 import { Region } from '../models/region.model';
 
 @Injectable({
@@ -10,6 +12,7 @@ import { Region } from '../models/region.model';
 })
 export class RegionSearchStateService {
   private searchRegionsService = inject(SearchRegion);
+  private searchDepartmentService = inject(SearchDepartment);
   private destroyRef = inject(DestroyRef);
 
   // Display value in the input (can be set without triggering search)
@@ -20,6 +23,10 @@ export class RegionSearchStateService {
   selectedRegion = signal<Region | null>(null);
   showDropdown = signal(false);
   isLoading = signal(false);
+
+  // Departments for the selected region
+  departments = signal<Department[]>([]);
+  isLoadingDepartments = signal(false);
 
   constructor() {
     // Convert the search term signal to an Observable and apply debounce + switchMap
@@ -61,6 +68,25 @@ export class RegionSearchStateService {
     this.showDropdown.set(false);
     this.regions.set([]);
     // Don't update searchTerm to avoid triggering a new search
+    // Load departments for the selected region
+    this.loadDepartments(region.code);
+  }
+
+  private loadDepartments(codeRegion: string): void {
+    this.isLoadingDepartments.set(true);
+    this.searchDepartmentService
+      .searchDepartment(codeRegion)
+      .pipe(
+        catchError(() => {
+          this.isLoadingDepartments.set(false);
+          return of([]);
+        }),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe((departments) => {
+        this.departments.set(departments);
+        this.isLoadingDepartments.set(false);
+      });
   }
 
   onInputFocus(): void {
@@ -77,5 +103,7 @@ export class RegionSearchStateService {
     this.selectedRegion.set(null);
     this.showDropdown.set(false);
     this.isLoading.set(false);
+    this.departments.set([]);
+    this.isLoadingDepartments.set(false);
   }
 }

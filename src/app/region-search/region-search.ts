@@ -2,6 +2,7 @@ import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router } from '@angular/router';
 import { filter } from 'rxjs';
+import { Department } from '../core/models/department.model';
 import { Region } from '../core/models/region.model';
 import { RegionNavigationService } from '../core/services/region-navigation.service';
 import { RegionSearchStateService } from '../core/services/region-search-state.service';
@@ -27,6 +28,9 @@ export class RegionSearch implements OnInit {
     this.navigationService.selectedDepartment.asReadonly();
   readonly showDropdown = this.searchState.showDropdown.asReadonly();
   readonly isLoading = this.searchState.isLoading.asReadonly();
+  readonly departments = this.searchState.departments.asReadonly();
+  readonly isLoadingDepartments =
+    this.searchState.isLoadingDepartments.asReadonly();
 
   handleSearch(search: string): void {
     this.searchState.handleSearch(search);
@@ -38,7 +42,11 @@ export class RegionSearch implements OnInit {
       event.stopPropagation();
     }
     this.searchState.selectRegion(region);
-    this.navigationService.navigateToRegion(region);
+    // Don't navigate anymore, departments will be displayed in the same component
+  }
+
+  selectDepartment(department: Department): void {
+    this.navigationService.navigateToDepartment(department);
   }
 
   onInputFocus(): void {
