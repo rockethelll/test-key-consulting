@@ -26,7 +26,6 @@ describe('RegionSearchComponent', () => {
         provideHttpClient(),
         provideHttpClientTesting(),
         provideRouter([
-          { path: 'region/:codeRegion', component: {} as any },
           { path: 'department/:codeDepartment', component: {} as any },
         ]),
       ],

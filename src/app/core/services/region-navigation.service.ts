@@ -15,13 +15,6 @@ export class RegionNavigationService {
 
   selectedDepartment = signal<Department | null>(null);
 
-  // This will be called from the component when route changes
-  // The component will provide the selectedRegion
-
-  navigateToRegion(region: Region): void {
-    this.router.navigate(['/region', region.code]);
-  }
-
   navigateToDepartment(department: Department): void {
     this.router.navigate(['/department', department.code]);
   }
