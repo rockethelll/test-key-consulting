@@ -48,6 +48,8 @@ export class MunicipalitiesListStateService {
         this.municipalities.set(municipalities);
         // Reset to the first page when new data arrives
         this.currentPage.set(1);
+        // Scroll to table when municipalities are loaded
+        setTimeout(() => this.scrollToTable(), 100);
       });
 
     // Debounce search input (300ms)
@@ -212,6 +214,21 @@ export class MunicipalitiesListStateService {
   // On search change
   onSearchChange(searchValue: string): void {
     this.searchSubject.next(searchValue);
+  }
+
+  private scrollToTable(): void {
+    // Scroll to the municipalities table with a minimal offset
+    const tableElement = document.getElementById('municipalities-table');
+    if (tableElement) {
+      const tableTop =
+        tableElement.getBoundingClientRect().top + window.scrollY;
+      // Scroll to table with a small offset (100px from top) to show the table header
+      const offset = 100;
+      window.scrollTo({
+        top: Math.max(0, tableTop - offset),
+        behavior: 'smooth',
+      });
+    }
   }
 
   private scrollToTop(): void {

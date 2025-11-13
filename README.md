@@ -10,6 +10,10 @@
 
 Application web moderne permettant d'explorer les régions françaises, leurs départements et leurs communes. Développée avec Angular, cette application offre une interface intuitive pour rechercher et naviguer dans l'organisation territoriale de la France.
 
+## Demo
+
+[See live project](https://key-consulting.saeros.org)
+
 ## 📋 Table des matières
 
 - [Fonctionnalités](#-fonctionnalités)
