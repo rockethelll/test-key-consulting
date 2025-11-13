@@ -17,7 +17,7 @@ describe('App', () => {
   it('should render title', async () => {
     expect(
       screen.getByRole('heading', {
-        name: 'Bienvenue sur le site de recherche de communes',
+        name: 'Explorer la France par région',
       })
     ).toBeInTheDocument();
   });
