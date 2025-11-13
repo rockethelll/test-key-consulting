@@ -53,6 +53,12 @@ export class RegionSearch implements OnInit {
     this.searchState.onInputFocus();
   }
 
+  clearSearch(): void {
+    this.searchState.reset();
+    this.navigationService.selectedDepartment.set(null);
+    this.router.navigate(['/']);
+  }
+
   ngOnInit(): void {
     // Listen to route changes to detect department selection
     this.router.events
