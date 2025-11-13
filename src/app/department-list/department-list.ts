@@ -1,12 +1,11 @@
 import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { switchMap } from 'rxjs';
 import {
   Department,
   SearchDepartment,
 } from '../GeoApiService/departmentService/search-department';
-import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-department-list',
@@ -20,6 +19,7 @@ export class DepartmentList implements OnInit {
   destroyRef = inject(DestroyRef);
   codeRegion = signal<string>('');
   departments = signal<Department[]>([]);
+
   ngOnInit() {
     this.activatedRoute.params.subscribe((params) => {
       this.codeRegion.set(params['codeRegion']);
@@ -38,6 +38,6 @@ export class DepartmentList implements OnInit {
     });
 
   goHome() {
-      this.router.navigate(['/']);
-    };
+    this.router.navigate(['/']);
+  }
 }

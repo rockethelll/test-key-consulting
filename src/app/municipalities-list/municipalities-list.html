@@ -1,6 +1,5 @@
 <div class="p-4 border-2 border-green-500 bg-green-100">
   <h2 class="text-2xl font-bold">Liste des communes</h2>
-  <p>communes-list works!</p>
 
   <button
     (click)="goBack()"
@@ -8,4 +7,31 @@
   >
     Retour à la liste des départements
   </button>
+
+  <!-- Show the municipalities found -->
+  @if (municipalities().length > 0) {
+  <table>
+    <thead>
+      <tr>
+        <th>Nom</th>
+        <th>Code</th>
+        <th>Code département</th>
+        <th>Code région</th>
+        <th>Codes postaux</th>
+        <th>Population</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+    @for (municipality of municipalities(); track municipality.code) {
+    <tr>
+      <td>{{ municipality.nom }}</td>
+      <td>{{ municipality.code }}</td>
+      <td>{{ municipality.codeDepartement }}</td>
+      <td>{{ municipality.codeRegion }}</td>
+      <td>{{ municipality.codesPostaux.join(', ') }}</td>
+      <td>{{ municipality.population }}</td>
+    </tr>
+    }
+  </table>
+  }
 </div>

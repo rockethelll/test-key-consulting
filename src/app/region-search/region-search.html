@@ -46,4 +46,14 @@
     </p>
   </div>
   }
+
+  <!-- Show the selected department -->
+  @if (selectedDepartment(); as department) {
+  <div class="mt-2 p-3 bg-green-50 border border-green-200 rounded-lg">
+    <p class="text-sm text-gray-600">
+      Département sélectionné:
+      <span class="font-semibold">{{ department.nom }}</span>
+    </p>
+  </div>
+  }
 </div>

@@ -9,6 +9,6 @@ export const environment = {
   departementsUrl: (codeRegion: string) =>
     `https://geo.api.gouv.fr/regions/${codeRegion}/departements`,
 
-  communesUrl: (codeDepartement: string) =>
+  municipalitesUrl: (codeDepartement: string) =>
     `https://geo.api.gouv.fr/departements/${codeDepartement}/communes`,
 };

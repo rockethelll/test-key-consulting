@@ -1,17 +1,26 @@
-import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
-import { catchError, debounceTime, of, switchMap } from 'rxjs';
-import { Region, SearchRegion } from '../GeoApiService/regionService/search-region';
-import { Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { catchError, debounceTime, filter, of, switchMap } from 'rxjs';
+import {
+  Department,
+  SearchDepartment,
+} from '../GeoApiService/departmentService/search-department';
+import {
+  Region,
+  SearchRegion,
+} from '../GeoApiService/regionService/search-region';
 
 @Component({
   selector: 'app-region-search',
   imports: [],
   templateUrl: './region-search.html',
 })
-export class RegionSearch {
+export class RegionSearch implements OnInit {
   router = inject(Router);
+  activatedRoute = inject(ActivatedRoute);
   searchRegionsService = inject(SearchRegion);
+  searchDepartmentService = inject(SearchDepartment);
   private destroyRef = inject(DestroyRef);
   // Display value in the input (can be set without triggering search)
   displayValue = signal('');
@@ -19,6 +28,7 @@ export class RegionSearch {
   private searchTerm = signal('');
   regions = signal<Region[]>([]);
   selectedRegion = signal<Region | null>(null);
+  selectedDepartment = signal<Department | null>(null);
   showDropdown = signal(false);
   isLoading = signal(false);
 
@@ -75,5 +85,40 @@ export class RegionSearch {
     if (this.regions().length > 0) {
       this.showDropdown.set(true);
     }
+  }
+
+  ngOnInit() {
+    // Listen to route changes to detect department selection
+    this.router.events
+      .pipe(
+        filter(
+          (event): event is NavigationEnd => event instanceof NavigationEnd
+        ),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe(() => {
+        const url = this.router.url;
+        const departmentMatch = url.match(/\/department\/([^\/]+)/);
+
+        if (departmentMatch && this.selectedRegion()) {
+          const codeDepartment = departmentMatch[1];
+          const codeRegion = this.selectedRegion()!.code;
+
+          // Récupérer les départements de la région et trouver celui correspondant
+          this.searchDepartmentService
+            .searchDepartment(codeRegion)
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe((departments) => {
+              const department = departments.find(
+                (d) => d.code === codeDepartment
+              );
+              if (department) {
+                this.selectedDepartment.set(department);
+              }
+            });
+        } else {
+          this.selectedDepartment.set(null);
+        }
+      });
   }
 }

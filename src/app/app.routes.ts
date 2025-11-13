@@ -8,7 +8,7 @@ export const routes: Routes = [
     component: DepartmentList,
   },
   {
-    path: 'department/:codeDepartement',
+    path: 'department/:codeDepartment',
     component: MunicipalitiesList,
   },
   {
