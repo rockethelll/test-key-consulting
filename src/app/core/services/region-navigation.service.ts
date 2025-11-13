@@ -23,10 +23,16 @@ export class RegionNavigationService {
     const url = this.router.url;
     const departmentMatch = url.match(/\/department\/([^\/]+)/);
 
-    if (departmentMatch && selectedRegion) {
-      const codeDepartment = departmentMatch[1];
-      const codeRegion = selectedRegion.code;
-      this.loadDepartment(codeRegion, codeDepartment);
+    if (departmentMatch) {
+      if (selectedRegion) {
+        const codeDepartment = departmentMatch[1];
+        const codeRegion = selectedRegion.code;
+        this.loadDepartment(codeRegion, codeDepartment);
+      } else {
+        // If no region is selected, redirect to home
+        this.router.navigate(['/']);
+        this.selectedDepartment.set(null);
+      }
     } else {
       this.selectedDepartment.set(null);
     }
