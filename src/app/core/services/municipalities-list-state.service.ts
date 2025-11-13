@@ -215,14 +215,14 @@ export class MunicipalitiesListStateService {
   }
 
   private scrollToTop(): void {
-    // Scroll to the table container instead of the very top of the page
+    // Scroll to the table container with a minimal offset
     // Find the table element and scroll to it with a small offset
     const tableElement = document.querySelector('table');
     if (tableElement) {
       const tableTop =
-        tableElement.getBoundingClientRect().top + window.pageYOffset;
-      // Scroll to table with a small offset (100px from top) for better UX
-      const offset = 100;
+        tableElement.getBoundingClientRect().top + window.scrollY;
+      // Scroll to table with a smaller offset (20px from top) to avoid scrolling too high
+      const offset = 20;
       window.scrollTo({
         top: Math.max(0, tableTop - offset),
         behavior: 'smooth',
