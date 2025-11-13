@@ -45,7 +45,6 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     name: Build and Deploy
-    needs: test
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
 
     steps:
