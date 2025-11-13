@@ -48,8 +48,6 @@ export class MunicipalitiesListStateService {
         this.municipalities.set(municipalities);
         // Reset to the first page when new data arrives
         this.currentPage.set(1);
-        // Scroll to table when municipalities are loaded
-        setTimeout(() => this.scrollToTable(), 100);
       });
 
     // Debounce search input (300ms)
@@ -216,19 +214,27 @@ export class MunicipalitiesListStateService {
     this.searchSubject.next(searchValue);
   }
 
-  private scrollToTable(): void {
-    // Scroll to the municipalities table with a minimal offset
-    const tableElement = document.getElementById('municipalities-table');
-    if (tableElement) {
-      const tableTop =
-        tableElement.getBoundingClientRect().top + window.scrollY;
-      // Scroll to table with a small offset (100px from top) to show the table header
-      const offset = 100;
-      window.scrollTo({
-        top: Math.max(0, tableTop - offset),
-        behavior: 'smooth',
+  scrollToTable(): void {
+    // Use requestAnimationFrame to ensure DOM is ready, then try multiple times if needed
+    const attemptScroll = (attempts = 0) => {
+      requestAnimationFrame(() => {
+        const tableElement = document.getElementById('municipalities-table');
+        if (tableElement) {
+          const tableTop =
+            tableElement.getBoundingClientRect().top + window.scrollY;
+          // Scroll to table with a small offset (100px from top) to show the table header
+          const offset = 100;
+          window.scrollTo({
+            top: Math.max(0, tableTop - offset),
+            behavior: 'smooth',
+          });
+        } else if (attempts < 10) {
+          // Retry up to 10 times if table not found yet
+          setTimeout(() => attemptScroll(attempts + 1), 50);
+        }
       });
-    }
+    };
+    attemptScroll();
   }
 
   private scrollToTop(): void {

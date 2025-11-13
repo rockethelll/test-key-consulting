@@ -1,5 +1,5 @@
 import { DecimalPipe, Location } from '@angular/common';
-import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import { Component, DestroyRef, effect, inject, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 import { MunicipalitiesListStateService } from '../core/services/municipalities-list-state.service';
@@ -30,6 +30,29 @@ export class MunicipalitiesList implements OnInit {
   readonly paginatedMunicipalities = this.stateService.paginatedMunicipalities;
   readonly totalPages = this.stateService.totalPages;
   readonly maxDisplayedItem = this.stateService.maxDisplayedItem;
+
+  private previousCodeDepartment = '';
+
+  constructor() {
+    // Scroll to table when municipalities are loaded for a new department
+    effect(() => {
+      const codeDepartment = this.stateService.codeDepartment();
+      const municipalities = this.municipalities();
+
+      // Only scroll if we have a new department and municipalities are loaded
+      if (
+        codeDepartment &&
+        codeDepartment !== this.previousCodeDepartment &&
+        municipalities.length > 0
+      ) {
+        this.previousCodeDepartment = codeDepartment;
+        // Use requestAnimationFrame to ensure DOM is updated, then retry if needed
+        requestAnimationFrame(() => {
+          this.stateService.scrollToTable();
+        });
+      }
+    });
+  }
 
   ngOnInit(): void {
     // Listen to route params and update the state
