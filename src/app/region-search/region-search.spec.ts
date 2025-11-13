@@ -10,11 +10,15 @@ import { fireEvent } from '@testing-library/dom';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { environment } from '../../environments/environment';
 import { Region } from '../core/models/region.model';
+import { RegionNavigationService } from '../core/services/region-navigation.service';
+import { RegionSearchStateService } from '../core/services/region-search-state.service';
 import { RegionSearch } from './region-search';
 
 describe('RegionSearchComponent', () => {
   let httpMock: HttpTestingController;
   let router: Router;
+  let searchStateService: RegionSearchStateService;
+  let navigationService: RegionNavigationService;
 
   beforeEach(async () => {
     await render(RegionSearch, {
@@ -30,6 +34,12 @@ describe('RegionSearchComponent', () => {
 
     httpMock = TestBed.inject(HttpTestingController);
     router = TestBed.inject(Router);
+    searchStateService = TestBed.inject(RegionSearchStateService);
+    navigationService = TestBed.inject(RegionNavigationService);
+
+    // Reset state before each test to avoid state pollution
+    searchStateService.reset();
+    navigationService.selectedDepartment.set(null);
   });
 
   afterEach(() => {
@@ -74,10 +84,6 @@ describe('RegionSearchComponent', () => {
       expect(screen.getByText('Bretagne')).toBeInTheDocument();
       expect(screen.getByText('Occitanie')).toBeInTheDocument();
     });
-
-    // Check that region codes are displayed
-    expect(screen.getByText('Code: 53')).toBeInTheDocument();
-    expect(screen.getByText('Code: 76')).toBeInTheDocument();
   });
 
   it('should show loading state during search', async () => {

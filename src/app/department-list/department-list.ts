@@ -1,9 +1,7 @@
-import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
-import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { switchMap } from 'rxjs';
-import { SearchDepartment } from '../GeoApiService/departmentService/search-department';
-import { Department } from '../core/models/department.model';
+import { DepartmentListStateService } from '../core/services/department-list-state.service';
 
 @Component({
   selector: 'app-department-list',
@@ -11,33 +9,27 @@ import { Department } from '../core/models/department.model';
   templateUrl: './department-list.html',
 })
 export class DepartmentList implements OnInit {
-  router = inject(Router);
-  activatedRoute = inject(ActivatedRoute);
-  searchDepartmentsService = inject(SearchDepartment);
-  destroyRef = inject(DestroyRef);
-  codeRegion = signal<string>('');
-  departments = signal<Department[]>([]);
+  private router = inject(Router);
+  private activatedRoute = inject(ActivatedRoute);
+  private destroyRef = inject(DestroyRef);
 
-  ngOnInit() {
-    this.activatedRoute.params.subscribe((params) => {
-      this.codeRegion.set(params['codeRegion']);
-    });
+  // Service for business logic
+  stateService = inject(DepartmentListStateService);
+
+  // Expose signals from service to template (readonly access)
+  readonly codeRegion = this.stateService.codeRegion.asReadonly();
+  readonly departments = this.stateService.departments.asReadonly();
+
+  ngOnInit(): void {
+    // Listen to route params and update the state
+    this.activatedRoute.params
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((params) => {
+        this.stateService.setCodeRegion(params['codeRegion']);
+      });
   }
 
-  // Get the departments for the given region
-  private _ = toObservable(this.codeRegion)
-    .pipe(
-      switchMap((codeRegion) =>
-        this.searchDepartmentsService.searchDepartment(codeRegion)
-      ),
-      takeUntilDestroyed(this.destroyRef)
-    )
-    .subscribe((departments) => {
-      this.departments.set(departments);
-    });
-
-  // Go to the home page
-  goHome() {
+  goHome(): void {
     this.router.navigate(['/']);
   }
 }

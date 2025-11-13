@@ -1,12 +1,10 @@
-import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
-import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { catchError, debounceTime, filter, of, switchMap } from 'rxjs';
-import { SearchDepartment } from '../GeoApiService/departmentService/search-department';
-import { SearchRegion } from '../GeoApiService/regionService/search-region';
-import { SEARCH_DEBOUNCE_TIME } from '../core/constants/app.constants';
-import { Department } from '../core/models/department.model';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { NavigationEnd, Router } from '@angular/router';
+import { filter } from 'rxjs';
 import { Region } from '../core/models/region.model';
+import { RegionNavigationService } from '../core/services/region-navigation.service';
+import { RegionSearchStateService } from '../core/services/region-search-state.service';
 
 @Component({
   selector: 'app-region-search',
@@ -14,77 +12,40 @@ import { Region } from '../core/models/region.model';
   templateUrl: './region-search.html',
 })
 export class RegionSearch implements OnInit {
-  router = inject(Router);
-  activatedRoute = inject(ActivatedRoute);
-  searchRegionsService = inject(SearchRegion);
-  searchDepartmentService = inject(SearchDepartment);
   private destroyRef = inject(DestroyRef);
-  // Display value in the input (can be set without triggering search)
-  displayValue = signal('');
-  // Internal search term for API calls
-  private searchTerm = signal('');
-  regions = signal<Region[]>([]);
-  selectedRegion = signal<Region | null>(null);
-  selectedDepartment = signal<Department | null>(null);
-  showDropdown = signal(false);
-  isLoading = signal(false);
+  private router = inject(Router);
 
-  // Convert the search term signal to an Observable and apply debounce + switchMap
-  // takeUntilDestroyed handles automatically the cleanup
-  private _ = toObservable(this.searchTerm)
-    .pipe(
-      debounceTime(SEARCH_DEBOUNCE_TIME),
-      switchMap((term) => {
-        if (!term || term.trim().length === 0) {
-          this.regions.set([]);
-          this.showDropdown.set(false);
-          return of([]);
-        }
-        this.isLoading.set(true);
-        this.showDropdown.set(true);
-        return this.searchRegionsService.searchRegion(term).pipe(
-          catchError(() => {
-            this.isLoading.set(false);
-            return of([]);
-          })
-        );
-      }),
-      takeUntilDestroyed(this.destroyRef)
-    )
-    .subscribe((regions) => {
-      this.regions.set(regions);
-      this.isLoading.set(false);
-    });
+  // Services for business logic
+  searchState = inject(RegionSearchStateService);
+  navigationService = inject(RegionNavigationService);
 
-  // Handle the search input and set the search to the input value
-  handleSearch(search: string) {
-    const trimmed = search.trim().toLowerCase();
-    this.displayValue.set(search.trim());
-    this.searchTerm.set(trimmed);
+  // Expose signals from services to template (readonly access)
+  readonly displayValue = this.searchState.displayValue.asReadonly();
+  readonly regions = this.searchState.regions.asReadonly();
+  readonly selectedRegion = this.searchState.selectedRegion.asReadonly();
+  readonly selectedDepartment =
+    this.navigationService.selectedDepartment.asReadonly();
+  readonly showDropdown = this.searchState.showDropdown.asReadonly();
+  readonly isLoading = this.searchState.isLoading.asReadonly();
+
+  handleSearch(search: string): void {
+    this.searchState.handleSearch(search);
   }
 
-  // Handle the selection of a region and set the search to the region name
-  selectRegion(region: Region, event?: Event) {
+  selectRegion(region: Region, event?: Event): void {
     if (event) {
       event.preventDefault();
       event.stopPropagation();
     }
-    this.selectedRegion.set(region);
-    this.displayValue.set(region.nom);
-    this.showDropdown.set(false);
-    this.regions.set([]);
-    // Don't update searchTerm to avoid triggering a new search
-    this.router.navigate(['/region', region.code]);
+    this.searchState.selectRegion(region);
+    this.navigationService.navigateToRegion(region);
   }
 
-  // Show the dropdown when the input is focused
-  onInputFocus() {
-    if (this.regions().length > 0) {
-      this.showDropdown.set(true);
-    }
+  onInputFocus(): void {
+    this.searchState.onInputFocus();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     // Listen to route changes to detect department selection
     this.router.events
       .pipe(
@@ -94,28 +55,9 @@ export class RegionSearch implements OnInit {
         takeUntilDestroyed(this.destroyRef)
       )
       .subscribe(() => {
-        const url = this.router.url;
-        const departmentMatch = url.match(/\/department\/([^\/]+)/);
-
-        if (departmentMatch && this.selectedRegion()) {
-          const codeDepartment = departmentMatch[1];
-          const codeRegion = this.selectedRegion()!.code;
-
-          // Get the departments for the given region and find the corresponding department
-          this.searchDepartmentService
-            .searchDepartment(codeRegion)
-            .pipe(takeUntilDestroyed(this.destroyRef))
-            .subscribe((departments) => {
-              const department = departments.find(
-                (d) => d.code === codeDepartment
-              );
-              if (department) {
-                this.selectedDepartment.set(department);
-              }
-            });
-        } else {
-          this.selectedDepartment.set(null);
-        }
+        this.navigationService.handleRouteChange(
+          this.searchState.selectedRegion()
+        );
       });
   }
 }
