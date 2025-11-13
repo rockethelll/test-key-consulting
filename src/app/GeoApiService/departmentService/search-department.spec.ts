@@ -7,7 +7,8 @@ import { TestBed } from '@angular/core/testing';
 import { firstValueFrom } from 'rxjs';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { environment } from '../../../environments/environment';
-import { Department, SearchDepartment } from './search-department';
+import { Department } from '../../core/models/department.model';
+import { SearchDepartment } from './search-department';
 
 describe('SearchDepartment', () => {
   let service: SearchDepartment;

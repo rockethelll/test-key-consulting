@@ -7,8 +7,8 @@ import { TestBed } from '@angular/core/testing';
 import { firstValueFrom } from 'rxjs';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { environment } from '../../../environments/environment';
-import { Municipalites, SearchMunicipalites } from './search-municipalites';
-
+import { Municipality } from '../../core/models/municipality.model';
+import { SearchMunicipalites } from './search-municipalites';
 describe('SearchMunicipalites', () => {
   let service: SearchMunicipalites;
   let httpMock: HttpTestingController;
@@ -33,7 +33,7 @@ describe('SearchMunicipalites', () => {
 
   it('should call the correct API URL and return mock data', async () => {
     const codeDepartment = '35';
-    const mockMunicipalities: Municipalites[] = [
+    const mockMunicipalities: Municipality[] = [
       {
         nom: 'Rennes',
         code: '35238',

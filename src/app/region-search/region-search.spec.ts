@@ -9,7 +9,7 @@ import { render, screen, waitFor } from '@testing-library/angular';
 import { fireEvent } from '@testing-library/dom';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { environment } from '../../environments/environment';
-import { Region } from '../GeoApiService/regionService/search-region';
+import { Region } from '../core/models/region.model';
 import { RegionSearch } from './region-search';
 
 describe('RegionSearchComponent', () => {

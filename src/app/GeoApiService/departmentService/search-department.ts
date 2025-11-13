@@ -1,12 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
-
-export type Department = {
-  nom: string;
-  code: string;
-  _score: number;
-};
+import { Department } from '../../core/models/department.model';
 
 @Injectable({
   providedIn: 'root',

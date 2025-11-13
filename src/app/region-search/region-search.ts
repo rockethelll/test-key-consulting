@@ -2,14 +2,11 @@ import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { catchError, debounceTime, filter, of, switchMap } from 'rxjs';
-import {
-  Department,
-  SearchDepartment,
-} from '../GeoApiService/departmentService/search-department';
-import {
-  Region,
-  SearchRegion,
-} from '../GeoApiService/regionService/search-region';
+import { SearchDepartment } from '../GeoApiService/departmentService/search-department';
+import { SearchRegion } from '../GeoApiService/regionService/search-region';
+import { SEARCH_DEBOUNCE_TIME } from '../core/constants/app.constants';
+import { Department } from '../core/models/department.model';
+import { Region } from '../core/models/region.model';
 
 @Component({
   selector: 'app-region-search',
@@ -36,7 +33,7 @@ export class RegionSearch implements OnInit {
   // takeUntilDestroyed handles automatically the cleanup
   private _ = toObservable(this.searchTerm)
     .pipe(
-      debounceTime(300),
+      debounceTime(SEARCH_DEBOUNCE_TIME),
       switchMap((term) => {
         if (!term || term.trim().length === 0) {
           this.regions.set([]);

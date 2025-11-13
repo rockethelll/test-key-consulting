@@ -2,10 +2,8 @@ import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { switchMap } from 'rxjs';
-import {
-  Department,
-  SearchDepartment,
-} from '../GeoApiService/departmentService/search-department';
+import { SearchDepartment } from '../GeoApiService/departmentService/search-department';
+import { Department } from '../core/models/department.model';
 
 @Component({
   selector: 'app-department-list',

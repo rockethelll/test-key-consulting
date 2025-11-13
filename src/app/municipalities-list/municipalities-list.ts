@@ -10,10 +10,14 @@ import {
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 import { debounceTime, Subject, switchMap } from 'rxjs';
+import { SearchMunicipalites } from '../GeoApiService/municipalitiesService/search-municipalites';
 import {
-  Municipalites,
-  SearchMunicipalites,
-} from '../GeoApiService/municipalitiesService/search-municipalites';
+  DEFAULT_PAGE,
+  DEFAULT_SORT_COLUMN,
+  DEFAULT_SORT_DIRECTION,
+  PAGINATION_ITEMS_PER_PAGE,
+} from '../core/constants/app.constants';
+import { Municipality } from '../core/models/municipality.model';
 
 type SortColumn = 'nom' | 'codesPostaux' | 'population' | null;
 type SortDirection = 'asc' | 'desc';
@@ -28,14 +32,14 @@ export class MunicipalitiesList implements OnInit {
   activatedRoute = inject(ActivatedRoute);
   searchMunicipalitesService = inject(SearchMunicipalites);
   codeDepartment = signal<string>('');
-  municipalities = signal<Municipalites[]>([]);
+  municipalities = signal<Municipality[]>([]);
   destroyRef = inject(DestroyRef);
 
   // Sort and pagination
-  sortColumn = signal<SortColumn>('nom');
-  sortDirection = signal<SortDirection>('asc');
-  currentPage = signal<number>(1);
-  itemsPerPage = 20;
+  sortColumn = signal<SortColumn>(DEFAULT_SORT_COLUMN);
+  sortDirection = signal<SortDirection>(DEFAULT_SORT_DIRECTION);
+  currentPage = signal<number>(DEFAULT_PAGE);
+  itemsPerPage = PAGINATION_ITEMS_PER_PAGE;
   searchTerm = signal<string>('');
   private searchSubject = new Subject<string>();
 

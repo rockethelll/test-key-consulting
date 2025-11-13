@@ -7,7 +7,8 @@ import { TestBed } from '@angular/core/testing';
 import { firstValueFrom } from 'rxjs';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { environment } from '../../../environments/environment';
-import { Region, SearchRegion } from './search-region';
+import { SearchRegion } from './search-region';
+import { Region } from '../../core/models/region.model';
 
 describe('SearchRegion', () => {
   let service: SearchRegion;

@@ -1,12 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
-
-export type Region = {
-  nom: string;
-  code: string;
-  _score: number;
-};
+import { Region } from '../../core/models/region.model';
 
 @Injectable({
   providedIn: 'root',
