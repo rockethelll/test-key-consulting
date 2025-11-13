@@ -2,12 +2,12 @@ import { Location } from '@angular/common';
 import { Component, inject } from '@angular/core';
 
 @Component({
-  selector: 'app-communes-list',
+  selector: 'app-municipalities-list',
   imports: [],
-  templateUrl: './communes-list.html',
+  templateUrl: './municipalities-list.html',
 })
-export class CommunesList {
-  location = inject(Location)
+export class MunicipalitiesList {
+  location = inject(Location);
 
   goBack() {
     this.location.back();

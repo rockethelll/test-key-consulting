@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
-import { CommunesList } from './communes-list/communes-list';
 import { DepartmentList } from './department-list/department-list';
+import { MunicipalitiesList } from './municipalities-list/municipalities-list';
 
 export const routes: Routes = [
   {
@@ -9,7 +9,7 @@ export const routes: Routes = [
   },
   {
     path: 'department/:codeDepartement',
-    component: CommunesList,
+    component: MunicipalitiesList,
   },
   {
     path: '**',
